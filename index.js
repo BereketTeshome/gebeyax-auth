@@ -36,5 +36,5 @@ app.get("/", (req, res) => {
 // Sync database and start server
 sequelize
   .sync({ force: true }) // ⚠️ This will DROP the table and recreate it!
-  .then(app.listen(3000, () => console.log("Server running on port 3000")))
+  .then(app.listen(4000, () => console.log("Server running on port 4000")))
   .catch((err) => console.error("Error syncing database:", err));
