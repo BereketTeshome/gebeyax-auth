@@ -30,7 +30,7 @@ app.use(passport.session());
 app.use("/", authRoutes);
 
 app.get("/", (req, res) => {
-  res.send(`Hello, ${req.user ? req.user.email : "Guest"}`);
+  res.send("Node.js is successfully running!!! ");
 });
 
 const port = process.env.PORT;
