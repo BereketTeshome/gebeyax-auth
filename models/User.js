@@ -1,58 +1,43 @@
-require("dotenv").config();
 const { Sequelize, DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 
-// Initialize Sequelize with DATABASE_URL
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
-  logging: false, // Disable logging for cleaner output
+  logging: false,
 });
 
-// Define the User model to support both Google and custom authentication
-const User = sequelize.define("Users", {
-  first_name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  last_name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  username: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    unique: true, // Ensure no duplicate emails
-    validate: {
-      isEmail: true, // Validate email format
-    },
-  },
-  // googleId: {
-  //   type: DataTypes.STRING,
-  //   unique: true,
-  //   allowNull: true,
-  // },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: true, // Only required for custom authentication
-  },
+// Users Table
+const Users = sequelize.define("Users", {
+  first_name: { type: DataTypes.STRING, allowNull: false },
+  last_name: { type: DataTypes.STRING, allowNull: false },
+  email: { type: DataTypes.STRING, unique: true },
+  about: { type: DataTypes.TEXT },
+  gender: { type: DataTypes.STRING },
+  theme_id: { type: DataTypes.TEXT },
+  lang_id: { type: DataTypes.TEXT },
+  pp: { type: DataTypes.JSONB },
+  cp: { type: DataTypes.JSONB },
+  minio_access_key: { type: DataTypes.STRING },
+  minio_secret_key: { type: DataTypes.STRING },
 });
 
-// Hash password before saving
-User.beforeCreate(async (user) => {
-  if (user.password) {
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
-  }
+// Authentications Table
+const Authentications = sequelize.define("Authentications", {
+  username: { type: DataTypes.STRING, allowNull: false, unique: true },
+  hashed_password: { type: DataTypes.STRING, allowNull: false },
+  email: { type: DataTypes.STRING, unique: true },
+  phone: { type: DataTypes.STRING, unique: true },
+  email_verified: { type: DataTypes.BOOLEAN, defaultValue: false },
+  recovery_email: { type: DataTypes.STRING, unique: true },
+  tfa: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+  metadata: { type: DataTypes.JSONB, allowNull: false, defaultValue: {} },
 });
 
-// Sync the model with the database
-sequelize
-  .sync()
-  .then(() => console.log("Database synced"))
-  .catch((err) => console.error("Error syncing database:", err));
+// Define relationships
+Users.hasOne(Authentications, { foreignKey: "user_id", onDelete: "CASCADE" });
+Authentications.belongsTo(Users, { foreignKey: "user_id" });
 
-module.exports = User;
+// Sync models
+sequelize.sync({ alter: true });
+
+module.exports = { Users, Authentications };
