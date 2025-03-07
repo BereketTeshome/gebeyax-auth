@@ -18,11 +18,12 @@ Follow these steps to set up and run the server locally:
    git clone https://github.com/gebeyax/gebeyax_auth.git
    npm install
    Create a .env file in the root directory and add the necessary environment variables,
-   Example: PORT=3000
+   Example: PORT=5000
             DATABASE_URL=your-database-url
             JWT_SECRET=your-secret-key
    npm run dev
 
-   
 
-   
+
+
+   ```
