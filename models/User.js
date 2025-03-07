@@ -30,11 +30,11 @@ const User = sequelize.define("Users", {
       isEmail: true, // Validate email format
     },
   },
-  googleId: {
-    type: DataTypes.STRING,
-    unique: true, // Unique for Google users
-    allowNull: true, // Allow null for custom-authenticated users
-  },
+  // googleId: {
+  //   type: DataTypes.STRING,
+  //   unique: true,
+  //   allowNull: true,
+  // },
   password: {
     type: DataTypes.STRING,
     allowNull: true, // Only required for custom authentication
