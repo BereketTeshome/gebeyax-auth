@@ -29,8 +29,16 @@ app.use(passport.session());
 // Routes
 app.use("/", authRoutes);
 
+// Create a new URL object to parse the database URL
+const parsedUrl = new URL(process.env.DATABASE_URL);
+
+// Get the port from the parsed URL
+const PGport = parsedUrl.port;
+
 app.get("/", (req, res) => {
-  res.send("Node.js is successfully running!!! ");
+  res.send(
+    `Node.js is successfully running!!!, PostgreSQL is running on port: ${PGport}`
+  );
 });
 
 const port = process.env.PORT;
