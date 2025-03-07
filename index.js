@@ -37,7 +37,7 @@ const PGport = parsedUrl.port;
 
 app.get("/", (req, res) => {
   res.send(
-    `Node.js is successfully running!!!, PostgreSQL is running on port: ${PGport}, env: ${process.env.DATABASE_URL}`
+    `Node.js is successfully running!!!, PostgreSQL is running on port: ${PGport}`
   );
 });
 

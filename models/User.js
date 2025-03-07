@@ -1,10 +1,13 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: "postgres",
-  logging: false,
-});
+const sequelize = new Sequelize(
+  "postgres://gebeyax:PgGxRSA1%21%40%23@localhost:8001/gebeyax",
+  {
+    dialect: "postgres",
+    logging: false,
+  }
+);
 
 // Users Table
 const Users = sequelize.define("Users", {
