@@ -75,15 +75,15 @@ router.post("/register", async (req, res) => {
 // 🔹 Login User (Email/Password)
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { username, password } = req.body;
+    if (!username || !password) {
       return res
         .status(400)
-        .json({ error: "Email and password are required." });
+        .json({ error: "Username and password are required." });
     }
 
     // Find authentication record
-    const authRecord = await Authentications.findOne({ where: { email } });
+    const authRecord = await Authentications.findOne({ where: { username } });
     if (!authRecord) {
       return res.status(401).json({ error: "Invalid credentials." });
     }
@@ -98,7 +98,7 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: authRecord.user_id, email }, secretKey, {
+    const token = jwt.sign({ id: authRecord.user_id, username }, secretKey, {
       expiresIn: "7d",
     });
 
