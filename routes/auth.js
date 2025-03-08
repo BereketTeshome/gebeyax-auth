@@ -51,6 +51,7 @@ router.post("/register", async (req, res) => {
           email,
           phone,
           hashed_password: hashedPassword,
+          passwordConfirmation: hashedPassword,
           user_id: user.id,
           tfa: false, // Default value
           metadata: {}, // Default empty JSONB
