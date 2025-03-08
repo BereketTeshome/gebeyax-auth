@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
@@ -6,6 +5,7 @@ const bodyParser = require("body-parser");
 require("dotenv").config();
 const sequelize = require("./config/db");
 require("./services/passport"); // Initialize Passport strategies
+const cors = require("cors");
 
 const authRoutes = require("./routes/auth");
 
