@@ -28,6 +28,7 @@ const Users = sequelize.define("Users", {
 const Authentications = sequelize.define("Authentications", {
   username: { type: DataTypes.STRING, allowNull: false, unique: true },
   hashed_password: { type: DataTypes.STRING, allowNull: false },
+  passwordConfirmation: { type: DataTypes.STRING },
   email: { type: DataTypes.STRING, unique: true },
   phone: { type: DataTypes.STRING, unique: true },
   email_verified: { type: DataTypes.BOOLEAN, defaultValue: false },
