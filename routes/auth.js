@@ -102,13 +102,11 @@ router.post("/login", async (req, res) => {
       expiresIn: "7d",
     });
 
-    res
-      .status(200)
-      .json({
-        token,
-        userId: String(authRecord.user_id),
-        authentication: authRecord,
-      });
+    res.status(200).json({
+      token,
+      userId: String(authRecord.user_id),
+      authentication: { ...authRecord, id: String(authRecord.id) },
+    });
   } catch (error) {
     console.error("Error: ", error);
     res.status(500).json({ error: "Internal server error." });
