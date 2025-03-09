@@ -105,7 +105,10 @@ router.post("/login", async (req, res) => {
     res.status(200).json({
       token,
       userId: String(authRecord.user_id),
-      authentication: { ...authRecord, id: String(authRecord.id) },
+      authentication: {
+        ...authRecord.get(), // Extracts only the data values
+        id: String(authRecord.id),
+      },
     });
   } catch (error) {
     console.error("Error: ", error);
