@@ -104,7 +104,7 @@ router.post("/login", async (req, res) => {
 
     res
       .status(200)
-      .json({ message: "Login successful", token, userId: authRecord.user_id });
+      .json({ token, userId: authRecord.user_id, authentication: authRecord });
   } catch (error) {
     console.error("Error: ", error);
     res.status(500).json({ error: "Internal server error." });
