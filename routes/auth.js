@@ -8,6 +8,7 @@ const router = express.Router();
 const secretKey = process.env.SESSION_SECRET;
 
 // 🔹 Register User (Email/Password)
+
 router.post("/register", async (req, res) => {
   try {
     const { first_name, last_name, username, email, password, phone } =
@@ -45,7 +46,7 @@ router.post("/register", async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       // Step 3: Create authentication record linked to user
-      await Authentications.create(
+      const authRecord = await Authentications.create(
         {
           username,
           email,
@@ -53,15 +54,29 @@ router.post("/register", async (req, res) => {
           hashed_password: hashedPassword,
           passwordConfirmation: hashedPassword,
           user_id: user.id,
-          tfa: false, // Default value
-          metadata: {}, // Default empty JSONB
+          tfa: false,
+          metadata: {},
         },
         { transaction }
       );
 
-      await transaction.commit(); // Commit if both inserts succeed
+      await transaction.commit(); // Commit if all inserts succeed
 
-      res.status(201).json({ message: "User registered successfully!" });
+      // Step 4: Generate JWT token
+      const token = jwt.sign(
+        { id: authRecord.user_id, username },
+        secretKey, // Use the same `secretKey` as in your `login` route
+        { expiresIn: "7d" }
+      );
+
+      res.status(201).json({
+        token,
+        userId: String(authRecord.user_id),
+        authentication: {
+          ...authRecord.get(), // Extracts only the data values
+          id: String(authRecord.id),
+        },
+      });
     } catch (error) {
       await transaction.rollback(); // Rollback if any step fails
       throw error;
