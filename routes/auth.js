@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const { Users, Authentications } = require("../models/User"); // Import both models
 
 const router = express.Router();
-const secretKey = process.env.SESSION_SECRET;
+// const ""secretKey"" = process.env.SESSION_SECRET;
 
 // 🔹 Register User (Email/Password)
 
@@ -65,7 +65,7 @@ router.post("/register", async (req, res) => {
       // Step 4: Generate JWT token
       const token = jwt.sign(
         { id: authRecord.user_id, username },
-        secretKey, // Use the same `secretKey` as in your `login` route
+        "secretKey", // Use the same `"secretKey"` as in your `login` route
         { expiresIn: "7d" }
       );
 
@@ -113,7 +113,7 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: authRecord.user_id, username }, secretKey, {
+    const token = jwt.sign({ id: authRecord.user_id, username }, "secretKey", {
       expiresIn: "7d",
     });
 
