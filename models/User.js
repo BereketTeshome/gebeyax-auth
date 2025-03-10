@@ -2,8 +2,8 @@ const { Sequelize, DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 
 const sequelize = new Sequelize(
-  "postgres://gebeyax:PgGxRSA1%21%40%23@localhost:8001/gebeyax",
-  // "postgres://postgres:462462b@@localhost:5432/postgres",
+  // "postgres://gebeyax:PgGxRSA1%21%40%23@localhost:8001/gebeyax",
+  "postgres://postgres:462462b@@localhost:5432/postgres",
   {
     dialect: "postgres",
     logging: false,
@@ -12,6 +12,11 @@ const sequelize = new Sequelize(
 
 // Users Table
 const Users = sequelize.define("Users", {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4, // Auto-generate UUID
+    primaryKey: true,
+  },
   first_name: { type: DataTypes.STRING, allowNull: false },
   last_name: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING, unique: true },
@@ -27,6 +32,11 @@ const Users = sequelize.define("Users", {
 
 // Authentications Table
 const Authentications = sequelize.define("Authentications", {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4, // Auto-generate UUID
+    primaryKey: true,
+  },
   username: { type: DataTypes.STRING, allowNull: false, unique: true },
   hashed_password: { type: DataTypes.STRING, allowNull: false },
   passwordConfirmation: { type: DataTypes.STRING },
@@ -36,6 +46,14 @@ const Authentications = sequelize.define("Authentications", {
   recovery_email: { type: DataTypes.STRING, unique: true },
   tfa: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
   metadata: { type: DataTypes.JSONB, allowNull: false, defaultValue: {} },
+  user_id: {
+    type: DataTypes.UUID,
+    references: {
+      model: Users,
+      key: "id",
+    },
+    allowNull: false,
+  },
 });
 
 // Define relationships
