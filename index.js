@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Session Middleware
 app.use(
   session({
-    secret: "process.env.SESSION_SECRET",
+    secret: process.env.SESSION_SECRET || "dummy-session-secret",
     resave: false,
     saveUninitialized: true,
   })
