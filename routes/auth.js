@@ -100,10 +100,11 @@ router.post("/login", async (req, res) => {
         .json({ error: "Username and password are required." });
     }
 
-    // Find authentication record with explicit schema
+    // Find authentication record from 'user' schema and 'authentications' table
     const authRecord = await Authentications.findOne({
       where: { username },
-      searchPath: "user", // Explicitly set the schema
+      searchPath: "user", // Ensures the query targets the correct schema
+      raw: true, // Simplifies the returned data structure
     });
 
     if (!authRecord) {
@@ -122,7 +123,7 @@ router.post("/login", async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { id: authRecord.user_id, username },
-      "secretKey", // Use environment variable in production
+      process.env.JWT_SECRET || "secretKey", // Use env variable for production
       { expiresIn: "7d" }
     );
 
