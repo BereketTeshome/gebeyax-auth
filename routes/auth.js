@@ -137,7 +137,6 @@ router.post("/login", async (req, res) => {
         email: authRecord.email,
         phone: authRecord.phone,
       },
-      user: authRecord.user, // Include user details properly
     });
   } catch (error) {
     console.error("Error during login:", error);
