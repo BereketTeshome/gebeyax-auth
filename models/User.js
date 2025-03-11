@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 
 // Database Connection
 const sequelize = new Sequelize(
-  // "postgres://postgres:462462b@@localhost:5432/postgres",
   "postgres://gebeyax:PgGxRSA1%21%40%23@localhost:8001/gebeyax",
   {
     dialect: "postgres",
@@ -72,16 +71,23 @@ const Authentications = sequelize.define(
   }
 );
 
-// Define relationships
-Users.hasOne(Authentications, { foreignKey: "user_id", onDelete: "CASCADE" });
-Authentications.belongsTo(Users, { foreignKey: "user_id" });
+// Define relationships with alias
+Users.hasOne(Authentications, {
+  foreignKey: "user_id",
+  as: "authentication",
+  onDelete: "CASCADE",
+});
+Authentications.belongsTo(Users, {
+  foreignKey: "user_id",
+  as: "user",
+});
 
 // Sync models
 (async () => {
   try {
     await sequelize.authenticate();
     console.log("Database connection has been established successfully.");
-    await sequelize.sync({ force: false }); // Set to 'true' only if you want to drop and recreate tables
+    await sequelize.sync({ force: false });
     console.log("Models synchronized successfully.");
   } catch (error) {
     console.error("Unable to connect to the database:", error);
