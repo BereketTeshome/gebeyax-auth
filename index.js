@@ -32,9 +32,7 @@ app.use(passport.session());
 app.use("/", authRoutes);
 
 app.get("/", (req, res) => {
-  res.send(
-    `Node.js is successfully running!!! ${process.env.GOOGLE_CLIENT_ID}, ${process.env.GOOGLE_CLIENT_SECRET}`
-  );
+  res.send(`Node.js is successfully running!!!`);
 });
 
 const port = process.env.PORT;
