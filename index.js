@@ -35,10 +35,8 @@ app.get("/", (req, res) => {
   res.send(`Node.js is successfully running!!!`);
 });
 
-const port = process.env.PORT;
-
 // Sync database and start server
 sequelize
   .sync({ force: true }) // ⚠️ This will DROP the table and recreate it!
-  .then(app.listen(port, () => console.log(`Server running on port ${port}`)))
+  .then(app.listen(5000, () => console.log(`Server running on port 5000`)))
   .catch((err) => console.error("Error syncing database:", err));
