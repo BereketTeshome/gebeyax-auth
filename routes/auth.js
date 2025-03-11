@@ -105,11 +105,11 @@ router.post("/login", async (req, res) => {
     // Fetch authentication record and include associated user data
     const authRecord = await Authentications.findOne({
       where: { username },
-      include: [{ model: Users, as: "user" }],
+      include: [{ model: Authentications, as: "authentications" }],
     });
 
     if (!authRecord) {
-      return res.status(401).json({ error: "Invalid credentials." });
+      return res.status(401).json({ error: "No auth record" });
     }
 
     // Validate password
@@ -143,66 +143,6 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: error });
   }
 });
-
-// 🔹 Login User (Email/Password)
-
-// router.post("/login", async (req, res) => {
-//   try {
-//     const { username, password } = req.body;
-//     console.log("Login attempt:", { username });
-
-//     if (!username || !password) {
-//       console.log("Missing credentials:", { username, password });
-//       return res
-//         .status(400)
-//         .json({ error: "Username and password are required." });
-//     }
-
-//     // Fetch authentication record and include associated user data
-//     const authRecord = await Authentications.findOne({
-//       where: { username },
-//       include: [{ model: Users, as: "user" }],
-//     });
-
-//     if (!authRecord) {
-//       console.log("Authentication record not found for username:", username);
-//       return res.status(401).json({ error: "Invalid credentials." });
-//     }
-
-//     // Validate password
-//     const validPassword = await bcrypt.compare(
-//       password,
-//       authRecord.hashed_password
-//     );
-
-//     if (!validPassword) {
-//       console.log("Password mismatch for user:", username);
-//       return res.status(401).json({ error: "Invalid credentials." });
-//     }
-
-//     // Generate JWT token
-//     const token = jwt.sign({ id: authRecord.user_id, username }, "secretKey", {
-//       expiresIn: "7d",
-//     });
-
-//     console.log("Login successful for user:", username);
-
-//     res.status(200).json({
-//       token,
-//       userId: String(authRecord.user_id),
-//       authentication: {
-//         id: String(authRecord.id),
-//         username: authRecord.username,
-//         email: authRecord.email,
-//         phone: authRecord.phone,
-//       },
-//       user: authRecord.user, // Include user details
-//     });
-//   } catch (error) {
-//     console.error("Error during login:", error);
-//     res.status(500).json({ error: error });
-//   }
-// });
 
 // 🔹 Google OAuth Login
 router.get(
