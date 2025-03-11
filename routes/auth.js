@@ -136,6 +136,8 @@ router.post("/login", async (req, res) => {
         username: authRecord.username,
         email: authRecord.email,
         phone: authRecord.phone,
+        emailVerified: authRecord.emailVerified,
+        recoveryEmail: authRecord.recoveryEmail,
       },
     });
   } catch (error) {
