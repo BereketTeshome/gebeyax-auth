@@ -93,9 +93,6 @@ router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Directly return username and password for debugging
-    return res.status(200).json({ username, password });
-
     if (!username || !password) {
       return res
         .status(400)
