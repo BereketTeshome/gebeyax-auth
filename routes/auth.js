@@ -94,36 +94,45 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
+    console.log("Login attempt:", { username });
+
     if (!username || !password) {
+      console.log("Missing credentials:", { username, password });
       return res
         .status(400)
         .json({ error: "Username and password are required." });
     }
 
-    // ✅ Direct query without `searchPath` since it's unnecessary if default schema is configured
+    // Fetch authentication record and include associated user data
     const authRecord = await Authentications.findOne({
       where: { username },
+      include: [{ model: Users, as: "user" }],
     });
 
     if (!authRecord) {
+      console.log("Authentication record not found for username:", username);
       return res.status(401).json({ error: "Invalid credentials." });
     }
 
-    // ✅ Compare passwords
+    // Validate password
     const validPassword = await bcrypt.compare(
       password,
       authRecord.hashed_password
     );
+
     if (!validPassword) {
+      console.log("Password mismatch for user:", username);
       return res.status(401).json({ error: "Invalid credentials." });
     }
 
-    // ✅ Generate JWT token
+    // Generate JWT token
     const token = jwt.sign(
       { id: authRecord.user_id, username },
       process.env.JWT_SECRET || "secretKey",
       { expiresIn: "7d" }
     );
+
+    console.log("Login successful for user:", username);
 
     res.status(200).json({
       token,
@@ -134,6 +143,7 @@ router.post("/login", async (req, res) => {
         email: authRecord.email,
         phone: authRecord.phone,
       },
+      user: authRecord.user, // Include user details
     });
   } catch (error) {
     console.error("Error during login:", error);
