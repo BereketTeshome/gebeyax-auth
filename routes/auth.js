@@ -94,9 +94,7 @@ router.post("/login", async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res
-        .status(400)
-        .json({ error: "Username and password are required." });
+      return res.status(400).json({ error: "Username and password are required." });
     }
 
     // Fetch authentication record and include associated user data
@@ -109,19 +107,16 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid auth record." });
     }
 
-    // Validate password
-    const validPassword = await bcrypt.compare(
-      password,
-      authRecord.hashed_password
-    );
+    // Debugging logs
+    console.log("Entered password:", password);
+    console.log("Stored hashed password:", authRecord.hashed_password);
+
+    // Alternative password validation
+    const hashedAttempt = await bcrypt.hash(password, authRecord.hashed_password);
+    const validPassword = hashedAttempt === authRecord.hashed_password;
 
     if (!validPassword) {
-      return res
-        .status(401)
-        .json({
-          error: "Invalid credentials.",
-          hashedPass: authRecord.hashed_password,
-        });
+      return res.status(401).json({ error: "Invalid credentials.", hashedAttempt: hashedAttempt, validPassword: validPassword });
     }
 
     // Generate JWT token
@@ -138,13 +133,11 @@ router.post("/login", async (req, res) => {
         email: authRecord.email,
         phone: authRecord.phone,
       },
-      user: authRecord.user, // Include user details properly
+      user: authRecord.user,
     });
   } catch (error) {
-    console.error("Error during login:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+    console.
+
 
 // 🔹 Google OAuth Login
 router.get(
