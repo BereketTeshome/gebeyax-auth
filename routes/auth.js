@@ -102,11 +102,11 @@ router.post("/login", async (req, res) => {
     // Fetch authentication record and include associated user data
     const authRecord = await Authentications.findOne({
       where: { username },
-      include: [{ model: Authentications, as: "authentications" }],
+      include: [{ model: Users, as: "user" }],
     });
 
     if (!authRecord) {
-      return res.status(401).json({ error: "No auth record" });
+      return res.status(401).json({ error: "Invalid credentials." });
     }
 
     // Validate password
@@ -133,11 +133,11 @@ router.post("/login", async (req, res) => {
         email: authRecord.email,
         phone: authRecord.phone,
       },
-      user: authRecord.user, // Include user details
+      user: authRecord.user, // Include user details properly
     });
   } catch (error) {
     console.error("Error during login:", error);
-    res.status(500).json({ error: error });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
