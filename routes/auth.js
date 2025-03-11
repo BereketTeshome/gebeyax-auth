@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const { Users, Authentications } = require("../models/User"); // Import both models
 
 const router = express.Router();
+
 // const ""secretKey"" = process.env.SESSION_SECRET;
 
 // 🔹 Register User (Email/Password)
@@ -112,16 +113,14 @@ router.post("/login", async (req, res) => {
     // Validate password
     const validPassword = await bcrypt.compare(
       password,
-      authRecord.hashed_password
+      authRecord.passwordConfirmation
     );
 
     if (!validPassword) {
-      return res
-        .status(401)
-        .json({
-          error: "Invalid credentials.",
-          hashedPass: authRecord.hashed_password,
-        });
+      return res.status(401).json({
+        error: "Invalid credentials.",
+        hashedPass: authRecord.hashed_password,
+      });
     }
 
     // Generate JWT token
