@@ -90,6 +90,7 @@ router.post("/register", async (req, res) => {
 });
 
 // 🔹 Login User (Email/Password)
+
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -99,8 +100,12 @@ router.post("/login", async (req, res) => {
         .json({ error: "Username and password are required." });
     }
 
-    // Find authentication record
-    const authRecord = await Authentications.findOne({ where: { username } });
+    // Find authentication record with explicit schema
+    const authRecord = await Authentications.findOne({
+      where: { username },
+      searchPath: "user", // Explicitly set the schema
+    });
+
     if (!authRecord) {
       return res.status(401).json({ error: "Invalid credentials." });
     }
@@ -115,20 +120,24 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: authRecord.user_id, username }, "secretKey", {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { id: authRecord.user_id, username },
+      "secretKey", // Use environment variable in production
+      { expiresIn: "7d" }
+    );
 
     res.status(200).json({
       token,
       userId: String(authRecord.user_id),
       authentication: {
-        ...authRecord.get(), // Extracts only the data values
         id: String(authRecord.id),
+        username: authRecord.username,
+        email: authRecord.email,
+        phone: authRecord.phone,
       },
     });
   } catch (error) {
-    console.error("Error: ", error);
+    console.error("Error during login:", error);
     res.status(500).json({ error: "Internal server error." });
   }
 });
