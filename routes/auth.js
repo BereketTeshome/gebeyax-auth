@@ -106,7 +106,7 @@ router.post("/login", async (req, res) => {
     });
 
     if (!authRecord) {
-      return res.status(401).json({ error: "Invalid credentials." });
+      return res.status(401).json({ error: "Invalid auth record." });
     }
 
     // Validate password
