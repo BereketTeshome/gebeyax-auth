@@ -135,7 +135,7 @@ router.post("/login", async (req, res) => {
         id: String(authRecord.id),
         username: authRecord.username,
         email: authRecord.email,
-        phone: authRecord.phone,
+        phoneeeeeeeeee: authRecord.phone,
         emailVerified: authRecord.emailVerified,
         recoveryEmail: authRecord.recoveryEmail,
       },
