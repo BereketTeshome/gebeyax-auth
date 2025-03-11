@@ -100,18 +100,16 @@ router.post("/login", async (req, res) => {
         .json({ error: "Username and password are required." });
     }
 
-    // Find authentication record from 'user' schema and 'authentications' table
+    // ✅ Direct query without `searchPath` since it's unnecessary if default schema is configured
     const authRecord = await Authentications.findOne({
       where: { username },
-      searchPath: "user", // Ensures the query targets the correct schema
-      raw: true, // Simplifies the returned data structure
     });
 
     if (!authRecord) {
       return res.status(401).json({ error: "Invalid credentials." });
     }
 
-    // Compare password
+    // ✅ Compare passwords
     const validPassword = await bcrypt.compare(
       password,
       authRecord.hashed_password
@@ -120,10 +118,10 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials." });
     }
 
-    // Generate JWT token
+    // ✅ Generate JWT token
     const token = jwt.sign(
       { id: authRecord.user_id, username },
-      process.env.JWT_SECRET || "secretKey", // Use env variable for production
+      process.env.JWT_SECRET || "secretKey",
       { expiresIn: "7d" }
     );
 
