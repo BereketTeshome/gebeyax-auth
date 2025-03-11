@@ -116,7 +116,7 @@ router.post("/login", async (req, res) => {
     const validPassword = hashedAttempt === authRecord.hashed_password;
 
     if (!validPassword) {
-      return res.status(401).json({ error: "Invalid credentials.", hashedAttempt: hashedAttempt, validPassword: validPassword });
+      return res.status(401).json({ error: "Invalid credentials." });
     }
 
     // Generate JWT token
