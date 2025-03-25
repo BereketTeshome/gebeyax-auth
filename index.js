@@ -29,14 +29,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
-// app.use("/", authRoutes);
+app.use("/", authRoutes);
 
-// app.get("/", (req, res) => {
-//   res.send(`Node.js is successfully running!!!`);
-// });
+app.get("/", (req, res) => {
+  res.send(`Node.js is successfully running!!!`);
+});
 
 // Sync database and start server
-// sequelize
-//   .sync({ force: true })
-//   .then(app.listen(5000, () => console.log(`Server running on port 5000`)))
-//   .catch((err) => console.error("Error syncing database:", err));
+sequelize
+  .sync({ force: true })
+  .then(app.listen(5000, () => console.log(`Server running on port 5000`)))
+  .catch((err) => console.error("Error syncing database:", err));
