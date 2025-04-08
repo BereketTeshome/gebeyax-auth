@@ -3,8 +3,8 @@ const bcrypt = require("bcrypt");
 
 // Database Connection
 const sequelize = new Sequelize(
-  // "postgres://gebeyax:PgGxRSA1%21%40%23@localhost:8001/gebeyax",
-  "postgres://postgres:462462b@@localhost:5432/postgres",
+  // "postgres://postgres:462462b@@localhost:5432/postgres",
+  "postgres://gebeyax:PgGxRSA1%21%40%23@localhost:8001/gebeyax",
   {
     dialect: "postgres",
     logging: false,
