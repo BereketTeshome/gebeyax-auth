@@ -153,7 +153,7 @@ router.post("/register", async (req, res) => {
     console.error("Error: ", error);
     res
       .status(500)
-      .json({ error: "Internal server error.", loggedError: error });
+      .json({ error: "Internal server error.", ErrorMessage: error });
   }
 });
 
@@ -208,8 +208,10 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error during login::", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Error during login:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", ErrorMessage: error });
   }
 });
 
