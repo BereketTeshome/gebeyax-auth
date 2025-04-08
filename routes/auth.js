@@ -8,8 +8,70 @@ const router = express.Router();
 
 // const ""secretKey"" = process.env.SESSION_SECRET;
 
-// 🔹 Register User (Email/Password)
+function generateRandomKey(length = 20) {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
 
+// import { OAuth2Client } from "google-auth-library";
+const { OAuth2Client } = require("google-auth-library");
+const CLIENT_ID = process.env.CLIENT_ID;
+const client = new OAuth2Client(CLIENT_ID);
+
+router.post("/login/google", async (req, res) => {
+  const { token } = req.body; // Google ID token from client
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    const googleId = payload.sub;
+    const email = payload.email;
+    const fullName = payload.name;
+    const picture = payload.picture;
+
+    // Check if user already exists in DB
+    let user = await Users.findOne({ where: { email } });
+
+    // If not, register them
+    if (!user) {
+      user = await Users.create({
+        email,
+        fullName,
+        googleId,
+        profileImage: picture,
+        role: "customer",
+      });
+    }
+
+    // ❗ Fix: Rename this variable so it's not the same as above
+    const jwtToken = jwt.sign({ userId: user.id }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    return res.status(200).json({
+      token: jwtToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        fullName: user.fullName,
+      },
+    });
+  } catch (error) {
+    console.error("Invalid Google token", error);
+    return res.status(401).json({ message: "Invalid Google token" });
+  }
+});
+// 🔹 Register User (Email/Password)
 router.post("/register", async (req, res) => {
   try {
     const { first_name, last_name, username, email, password, phone } =
@@ -39,7 +101,12 @@ router.post("/register", async (req, res) => {
     try {
       // Step 1: Create user record
       const user = await Users.create(
-        { first_name, last_name },
+        {
+          first_name,
+          last_name,
+          minio_access_key: generateRandomKey(),
+          minio_secret_key: generateRandomKey(),
+        },
         { transaction }
       );
 
